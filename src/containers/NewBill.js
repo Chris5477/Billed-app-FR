@@ -16,9 +16,14 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
+    const fileName = filePath[filePath.length-1 ]
+    const extension = /(.png|.jpg|.jpeg)$/
+    if(!fileName.match(extension)){
+      document.querySelector(`input[data-testid="file"]`).value=""
+      alert("Veuillez inserer un justificatif contenant l'extension ;.jpg , .jpeg ou .png")
+    }
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -26,7 +31,7 @@ export default class NewBill {
       .then(snapshot => snapshot.ref.getDownloadURL())
       .then(url => {
         this.fileUrl = url
-        this.fileName = fileName
+        this.fileName = fileName + extension
       })
   }
   handleSubmit = e => {
