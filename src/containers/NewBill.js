@@ -23,6 +23,7 @@ export default class NewBill {
     if(!fileName.match(extension)){
       document.querySelector(`input[data-testid="file"]`).value=""
       alert("Veuillez inserer un justificatif contenant l'extension ;.jpg , .jpeg ou .png")
+      return 0
     }
     this.firestore
       .storage
