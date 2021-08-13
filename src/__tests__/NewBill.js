@@ -8,6 +8,10 @@ import { ExpectationFailed } from "http-errors"
 
 
 describe("Given I am connected as an employee", () => {
+  const file = {
+    file1 : "src/assets/images/facturefreemobile.jpg",
+    file2 : "src/assets/images/facturefreemobile.svg"
+  }
   describe("When I am on NewBill Page and I don't input fields in forms and I click on button send", () => {
     test("Then I'm invited to input the empty fields in form ", () => {
       const html = NewBillUI()
@@ -27,14 +31,13 @@ describe("Given I am connected as an employee", () => {
 
       const html = NewBillUI()
       document.body.innerHTML = html
-      const mock = jest.fn().mockReturnValue("azeert.svg")    
-      const file = mock()
+      const mock = jest.fn().mockReturnValue(file.file1)    
+      const valueFile = mock()
       const extension = new RegExp(/(.png|.jpg|.jpeg)$/)
-      const result = extension.test(file);
-      expect(result).toBeFalsy()
-      const inputFile = screen.getByTestId("file").value
-      expect(inputFile).toBe("")
-      expect(alert()).toHaveBeenCalled() // A voir pour que ca marche
+      const result = extension.test(valueFile);
+      expect(result).toBeTruthy()
+      
+     // Finir avec l lalerte
 
 
     })
@@ -47,12 +50,27 @@ describe("Given I am connected as an employee", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
 
-      const mock = jest.fn().mockReturnValueOnce("Transport").mockReturnValueOnce("Repas").mockReturnValueOnce("10/02/2020").mockReturnValueOnce("44").mockReturnValueOnce("0").mockReturnValueOnce("20").mockReturnValueOnce("sdsdsdsd").mockReturnValueOnce("ererererer.png")
+      const date = Date.now()
+      console.log(date)
+ 
 
-      const inputs = [...document.querySelectorAll("input")]
-        const checkedData = inputs.filter(el => el.value=mock())
-        const result = checkedData !== [] ? true : false
-        expect(result).toBeTruthy()
+      const mock = jest.fn().mockReturnValueOnce(date).mockReturnValueOnce(44).mockReturnValueOnce(20).mockReturnValueOnce(file.file1)
+
+      const allInputs = []
+
+      const inputDate = screen.getByTestId("datepicker")
+      const inputPrice = screen.getByTestId("amount")
+      const inputTva = screen.getByTestId("pct")
+      const inputProof = screen.getByTestId("file")
+
+      allInputs.push(inputDate, inputPrice,inputTva, inputProof)
+
+      const checkedData = allInputs.filter(el => el.value=mock())
+      const result = checkedData !== [] ? true : false
+      expect(result).toBeTruthy()
+
+
+        // Faire  le test de la redirection
 
 
     })
