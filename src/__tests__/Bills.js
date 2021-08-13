@@ -5,29 +5,20 @@ import { bills } from "../fixtures/bills.js";
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", () => {
-
       const user = {
         email: "azerty@test.com",
-        password: "azerty",
-        status: "connected",
         type: "Employee",
       };
 
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("user", JSON.stringify(user));
 
-      const html = BillsUI({data : []})
-      document.body.innerHTML = html
-      const a = screen.getByTestId("icon-window")
-      expect(a).not.toBeUndefined()
-      a.classList.add("active-icon")
-      a.classList.contains("active-icon")
-      console.log(a.classList.contains("active-icon"))
-      expect(a).toBeTruthy()
+      const html = BillsUI({ data: [] });
+      document.body.innerHTML = html;
 
-      //TEST A AMELIORER //
+      const divIcon = screen.getByTestId("icon-window");
+      const result = divIcon.classList.contains("active-icon");
 
-
-
+      expect(result).toBe(true);
     });
 
     test("Then bills should be ordered from earliest to latest", () => {
