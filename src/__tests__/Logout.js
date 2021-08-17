@@ -37,7 +37,7 @@ describe('Given I am connected', () => {
       const logout = new Logout({ document, onNavigate, localStorage })
       const handleClick = jest.fn(logout.handleClick)
 
-      const disco = screen.getByTestId('layout-disconnect')
+      const disco = document.getElementById("layout-disconnect")
       disco.addEventListener('click', handleClick)
       userEvent.click(disco)
       expect(handleClick).toHaveBeenCalled()

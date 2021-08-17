@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
+import NewBillUI from "../views/NewBillUI.js";
+import LoginUI from "../views/LoginUI.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -30,4 +32,33 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
   });
+
+  describe("I am on the Bill Page",() => {
+    test("I should be on NewBill Page", () => {
+
+      const html = BillsUI({data : []})
+      document.body.innerHTML = html
+
+      const buttonNewBill = screen.getByTestId("btn-new-bill")
+      buttonNewBill.click(document.body.innerHTML = NewBillUI())
+
+      const form = screen.getByTestId("form-new-bill")
+      expect(form).toBeDefined()
+    })
+
+    test("I should be disconnected and I should be on Login Page", () => {
+
+      const html = BillsUI({data : []})
+      document.body.innerHTML = html
+
+      const buttonLogout = document.getElementById("layout-disconnect")
+      buttonLogout.click(document.body.innerHTML = LoginUI())
+
+      const form = screen.getByTestId("form-employee")
+      expect(form).toBeDefined()
+
+
+    
+    })
+  })
 });
