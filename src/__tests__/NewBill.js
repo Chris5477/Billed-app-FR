@@ -1,6 +1,9 @@
 import { fireEvent, screen } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js";
 import NewBillUI from "../views/NewBillUI.js"
+import userEvent from '@testing-library/user-event'
+import '@testing-library/jest-dom'
+
 
 
 describe("Given I am connected as an employee", () => {
@@ -60,22 +63,38 @@ describe("Given I am connected as an employee", () => {
   })
   
   describe("When I am on NewBill Page and I input a proof with bad extension", () => {
-    test("Then it should alert the user that the format of proof is not correct and to empty the fileds", () => {
+    test.only("Then it should alert the user that the format of proof is not correct and to empty the fileds", () => {
+  
+    document.body.innerHTML = NewBillUI()
+
+    const files = {
+      file1 : "file.jpg",
+      file2 : "file.mp3"
+    }
+
+    const handleChangeFileMock = jest.fn().mockReturnValue(files.file2)
+
+  
+    const inputFile = screen.getByTestId("file")
+    const span = screen.getByTestId("wrong-file")
+    const extension = new RegExp(/(.png|.jpg|.jpeg)$/)
+    inputFile.addEventListener("click", handleChangeFileMock)
+    userEvent.click(inputFile)
+    inputFile.file = handleChangeFileMock()
+    expect(handleChangeFileMock).toHaveBeenCalled()
+    if(!extension.test(inputFile.file)){
+      span.style.display ="initial"
+    }
+    expect(span).toHaveStyle("display: initial")
+
+    // expect(screen.getAllByText("Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)")).toBeTruthy()
+
+    // expect(span).toBeVisible()
+
+  
+    
       
-      const file = {
-        file1 : "src/assets/images/facturefreemobile.jpg",
-        file2 : "src/assets/images/facturefreemobile.svg"
-      }
-
-      const html = NewBillUI()
-      document.body.innerHTML = html
-
-      const mock = jest.fn().mockReturnValue(file.file2)  
-      const valueFile = mock()
-      const extension = new RegExp(/(.png|.jpg|.jpeg)$/)
-      const result = extension.test(valueFile);
-      expect(result).toBeFalsy()
-     // TEST A PEAUFINER //
+     
     })
   })
 

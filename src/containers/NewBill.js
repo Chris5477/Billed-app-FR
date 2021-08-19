@@ -1,5 +1,6 @@
 
 import { ROUTES_PATH } from '../constants/routes.js'
+import BillsUI from '../views/BillsUI.js'
 import Logout from "./Logout.js"
 
 export default class NewBill {
@@ -16,13 +17,14 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
+    const span = this.document.querySelector(".error-msg")
     let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1 ]
     const extension = /(.png|.jpg|.jpeg)$/
     if(!fileName.match(extension)){
       document.querySelector(`input[data-testid="file"]`).value=""
-      alert("Veuillez inserer un justificatif contenant l'extension ;.jpg , .jpeg ou .png")
+      span.style.display ="initial"
       return 0
     }
     this.firestore
