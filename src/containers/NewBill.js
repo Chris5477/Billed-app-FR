@@ -17,14 +17,14 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
-    const span = this.document.querySelector(".error-msg")
+    const span = document.querySelector(".error-msg")
     let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1 ]
     const extension = /(.png|.jpg|.jpeg)$/
     if(!fileName.match(extension)){
       document.querySelector(`input[data-testid="file"]`).value=""
-      span.style.display ="initial"
+      span.innerHTML ="Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)"
       return 0
     }
     this.firestore
