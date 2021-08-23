@@ -1,11 +1,8 @@
 import { screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
-import Bills from "../containers/Bills.js"
 import { bills } from "../fixtures/bills.js";
 import NewBillUI from "../views/NewBillUI.js";
 import LoginUI from "../views/LoginUI.js";
-import firestore from "../app/Firestore.js"
-import { ROUTES_PATH } from "../constants/routes.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -24,7 +21,6 @@ describe("Given I am connected as an employee", () => {
       const result = divIcon.classList.contains("active-icon");
 
       expect(result).toBe(true);
-
     });
 
     test("Then bills should be ordered from earliest to latest", () => {
@@ -37,32 +33,25 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  describe("I am on the Bill Page",() => {
-    test("when i click on newBill button , I should be on NewBill Page", () => {
+  test("when i click on newBill button , I should be on NewBill Page", () => {
+    const html = BillsUI({ data: [] });
+    document.body.innerHTML = html;
 
-      const html = BillsUI({data : []})
-      document.body.innerHTML = html
+    const buttonNewBill = screen.getByTestId("btn-new-bill");
+    buttonNewBill.click((document.body.innerHTML = NewBillUI()));
 
-      const buttonNewBill = screen.getByTestId("btn-new-bill")
-      buttonNewBill.click(document.body.innerHTML = NewBillUI())  
+    const form = screen.getByTestId("form-new-bill");
+    expect(form).toBeDefined();
+  });
 
-      const form = screen.getByTestId("form-new-bill")
-      expect(form).toBeDefined()
-    })
+  test("when I click on disconnect buutton, I should be disconnected and I should be on Login Page", () => {
+    const html = BillsUI({ data: [] });
+    document.body.innerHTML = html;
 
-    test("I should be disconnected and I should be on Login Page", () => {
+    const buttonLogout = document.getElementById("layout-disconnect");
+    buttonLogout.click((document.body.innerHTML = LoginUI()));
 
-      const html = BillsUI({data : []})
-      document.body.innerHTML = html
-
-      const buttonLogout = document.getElementById("layout-disconnect")
-      buttonLogout.click(document.body.innerHTML = LoginUI())
-
-      const form = screen.getByTestId("form-employee")
-      expect(form).toBeDefined()
-
-
-    
-    })
-  })
+    const form = screen.getByTestId("form-employee");
+    expect(form).toBeDefined();
+  });
 });

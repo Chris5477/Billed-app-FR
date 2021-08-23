@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event";
 
 import "@testing-library/jest-dom";
 
-describe("Given I am connected as an employee", () => {
+describe("Given I am connected as an employee I am on NewBill Page ", () => {
   test("it should highlight logo newBill", () => {
     const html = NewBillUI();
     document.body.innerHTML = html;
@@ -17,20 +17,26 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-describe("When I am on NewBill Page and I don't input fields in forms and I click on button send", () => {
-  test("Then I'm invited to input the empty fields in form ", () => {
+  test("When I click on button send, I should stay on NewBill page and I am invited to fill the empty fields in form ", () => {
     const html = NewBillUI();
     document.body.innerHTML = html;
 
     const mock = jest.fn().mockReturnValue("");
+
     const inputs = [...document.querySelectorAll("input")];
     const fillInput = inputs.map((el) => (el.value = mock()));
+    const buttonNewBill = document.getElementById("btn-send-bill")
+
+    const handleSubmitBill = jest.fn(e => e.preventDefault())
+    buttonNewBill.addEventListener("click", handleSubmitBill)
+    userEvent.click(buttonNewBill)
+
     const result = fillInput.every((element) => element === "");
     expect(result).toBeTruthy();
   });
-});
 
-describe("When I am on NewBill page , I fill inputs with correct format except input file", () => {
+
+describe("I fill inputs with correct format except input file", () => {
   test("I should stayed on NewBil Page and i'm invit to fill the inputs with wrong format", () => {
     const html = NewBillUI();
     document.body.innerHTML = html;
@@ -55,8 +61,8 @@ describe("When I am on NewBill page , I fill inputs with correct format except i
   });
 });
 
-describe("When I am on NewBill Page and I input a proof with bad extension", () => {
-  test.only("Then it should alert the user that the format of proof is not correct and to empty the fileds", () => {
+describe("I input a proof with bad extension", () => {
+  test("Then it should alert the user that the format of proof is not correct and to empty the fileds", () => {
     const files = {
       file1: "azerty.mp3",
       file2: "azerty.png",
@@ -67,9 +73,7 @@ describe("When I am on NewBill Page and I input a proof with bad extension", () 
     const onNavigate = (pathname) => {
       document.body.innerHTML = ROUTES({ pathname });
     };
-    // const wxc = new NewBill(window , onNavigate)
 
-    // const aze = wxc.handleChangeFile
     const inputFile = screen.getByTestId("file");
 
     const obj = {
@@ -78,7 +82,7 @@ describe("When I am on NewBill Page and I input a proof with bad extension", () 
 
       changeFile: function () {
         const span = document.querySelector(".error-msg");
-        inputFile.file = files.file2;
+        inputFile.file = files.file1;
         const extension = /(.png|.jpg|.jpeg)$/;
         if (!inputFile.file.match(extension)) {
           document.querySelector(`input[data-testid="file"]`).value = "";
@@ -95,7 +99,7 @@ describe("When I am on NewBill Page and I input a proof with bad extension", () 
   });
 });
 
-describe("When I am on NewBill Page and I fill all fields with correct format and i click on button send", () => {
+describe("I fill all fields with correct format and i click on button send", () => {
   test("It should redirect user on Bills Page and I should see my new bill on list of bill", () => {
     const file = {
       file1: "src/assets/images/facturefreemobile.jpg",
