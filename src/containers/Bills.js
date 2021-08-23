@@ -2,7 +2,7 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import { formatDate, formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
 
-export default class {
+export default class Bill{
   constructor({ document, onNavigate, firestore, localStorage }) {
     this.document = document
     this.onNavigate = onNavigate
@@ -15,7 +15,6 @@ export default class {
     })
     new Logout({ document, localStorage, onNavigate })
   }
-
   handleClickNewBill = e => {
     this.onNavigate(ROUTES_PATH['NewBill'])
   }

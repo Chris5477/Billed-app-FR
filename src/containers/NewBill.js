@@ -18,7 +18,7 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     const span = document.querySelector(".error-msg")
-    let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    let file = document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1 ]
     const extension = /(.png|.jpg|.jpeg)$/
@@ -27,6 +27,7 @@ export default class NewBill {
       span.innerHTML ="Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)"
       return 0
     }
+    
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)

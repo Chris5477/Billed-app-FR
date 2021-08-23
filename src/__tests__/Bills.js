@@ -1,10 +1,14 @@
 import { screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
-import NewBillUI from "../views/NewBillUI.js";
 import LoginUI from "../views/LoginUI.js";
+import Bill from "../containers/Bills.js"
+import {ROUTES, ROUTES_PATH } from "../constants/routes.js"
+import userEvent from "@testing-library/user-event";
+import Logout from "../containers/Logout.js"
 
 describe("Given I am connected as an employee", () => {
+  const onNavigate = pathname => document.body.innerHTML = ROUTES({pathname})
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", () => {
       const user = {
@@ -33,25 +37,59 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  test("when i click on newBill button , I should be on NewBill Page", () => {
-    const html = BillsUI({ data: [] });
-    document.body.innerHTML = html;
+  test("When I click on icon-eye, i should see the proof join on bill", () => {
+    document.body.innerHTML = BillsUI({data : bills})
+    const iconEye = screen.getAllByTestId("icon-eye")
 
-    const buttonNewBill = screen.getByTestId("btn-new-bill");
-    buttonNewBill.click((document.body.innerHTML = NewBillUI()));
+    const seeProof = new Bill({document, onNavigate, undefined, localStorage})
 
-    const form = screen.getByTestId("form-new-bill");
-    expect(form).toBeDefined();
+    const handleClickIconEye = jest.fn(seeProof.handleClickIconEye)
+    iconEye[1].addEventListener("click", () => handleClickIconEye(iconEye[1]))
+    userEvent.click(iconEye[1])
+    expect(screen.getByText("Justificatif")).toBeTruthy()
+
+  })
+
+  test("When I click on newBill button , I should be on NewBill Page", () => {
+    
+    const user = {
+      type: "Employee",
+      email: "azerty@test.com",
+      password: "azerty",
+      status: "connected"
+    }
+
+    document.body.innerHTML = BillsUI({data : []})
+
+    const addBill = new Bill({document, onNavigate, undefined, localStorage})
+    const handleClickNewBill = jest.fn(addBill.handleClickNewBill)
+
+    const btnAddBill = screen.getByTestId("btn-new-bill")
+    btnAddBill.addEventListener("click", handleClickNewBill)
+    userEvent.click(btnAddBill)
+    expect(handleClickNewBill).toHaveBeenCalled()
+    expect(screen.getByText("Envoyer une note de frais")).toBeTruthy()
+
+    
   });
 
   test("when I click on disconnect buutton, I should be disconnected and I should be on Login Page", () => {
     const html = BillsUI({ data: [] });
     document.body.innerHTML = html;
 
+    const logout = new Logout({document, onNavigate, localStorage})
+
+    const handleClick = jest.fn(logout.handleClick)
+
+
     const buttonLogout = document.getElementById("layout-disconnect");
-    buttonLogout.click((document.body.innerHTML = LoginUI()));
+    buttonLogout.addEventListener("click", handleClick)
+    userEvent.click(buttonLogout);
+    expect(handleClick).toHaveBeenCalled()
+    expect(screen.getByText("Administration")).toBeTruthy()
 
     const form = screen.getByTestId("form-employee");
     expect(form).toBeDefined();
   });
+
 });
