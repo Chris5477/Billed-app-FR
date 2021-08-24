@@ -1,10 +1,11 @@
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent, screen, createEvent } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import Bill from "../containers/Bills"
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import userEvent from "@testing-library/user-event";
 import { ROUTES } from "../constants/routes.js";
+import firestore from "../app/Firestore.js"
 
 import "@testing-library/jest-dom";
 
@@ -108,7 +109,8 @@ describe("I fill inputs with correct format except input file", () => {
 
 describe("I input a proof with bad extension", () => {
   test("Then it should alert the user that the format of proof is not correct and to empty the fileds", () => {
-    const files = ["azerty.mp3", "azerty.jpg"];
+    const aaa = [new File(['(⌐□_□)'], 'chucknorris.svg', {type: 'image/svg'})];
+   
     const html = NewBillUI();
     document.body.innerHTML = html;
 
@@ -116,36 +118,16 @@ describe("I input a proof with bad extension", () => {
 
     const inputFile = screen.getByTestId("file");
 
-    const addNewBill = new NewBill({ document, onNavigate, undefined, localStorage });
+    const addNewBill = new NewBill({ document, onNavigate, firestore, localStorage });
     const handleChangeFile = jest.fn(addNewBill.handleChangeFile);
-    inputFile.addEventListener("click", handleChangeFile);
-    userEvent.click(inputFile)
-
+    
+    inputFile.addEventListener("input", handleChangeFile);
+    fireEvent(inputFile,createEvent('input', inputFile, {
+    target: {files: aaa},
+      }))
     expect(handleChangeFile).toHaveBeenCalled();
-    // expect(screen.getByText("Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)")).toBeTruthy();
-
-    // const inputFile = screen.getByTestId("file");
-
-    // const obj = {
-    //   document: window,
-    //   onNavigate,
-
-    //   changeFile: function () {
-    //     const span = document.querySelector(".error-msg");
-    //     inputFile.file = files.file1;
-    //     const extension = /(.png|.jpg|.jpeg)$/;
-    //     if (!inputFile.file.match(extension)) {
-    //       document.querySelector(`input[data-testid="file"]`).value = "";
-    //       span.innerHTML = "Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)";
-    //     }
-    //   },
-    // };
-
-    // inputFile.addEventListener("click", obj.changeFile);
-    // userEvent.click(inputFile);
-    // const span = screen.getByTestId("wrong-file");
-    // const result = span.innerHTML === "Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)";
-    // expect(result).toBeTruthy();
+    expect(screen.getByText("Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)")).toBeDefined();
+   
   });
 });
 

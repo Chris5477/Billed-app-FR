@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/dom";
+import { fireEvent, screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import LoginUI from "../views/LoginUI.js";
@@ -19,7 +19,7 @@ describe("Given I am connected as an employee", () => {
         type: "Employee",
       };
 
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("user", JSON.stringify(user));
       document.body.innerHTML = LoginUI();
 
       screen.getByTestId("employee-email-input").value = "topher@gmail.com";
@@ -31,19 +31,9 @@ describe("Given I am connected as an employee", () => {
       const btnSubmitEmployee = screen.getByTestId("employee-login-button");
       btnSubmitEmployee.addEventListener("click", (e) => handleSubmitEmployee);
       userEvent.click(btnSubmitEmployee);
-      const checkClass = screen.getByTestId("icon-window").classList.contains("active-icon")
-      console.log(checkClass)
-      expect(checkClass).toBeTruthy()
+      const checkClass = screen.getByTestId("icon-window").classList.contains("active-icon");
+      expect(checkClass).toBeTruthy();
 
-      // localStorage.setItem("user", JSON.stringify(user));
-
-      // const html = BillsUI({ data: [] });
-      // document.body.innerHTML = html;
-
-      // const divIcon = screen.getByTestId("icon-window");
-      // const result = divIcon.classList.contains("active-icon");
-
-      // expect(result).toBe(true);
     });
 
     test("Then bills should be ordered from earliest to latest", () => {
@@ -57,14 +47,21 @@ describe("Given I am connected as an employee", () => {
   });
 
   test("When I click on icon-eye, i should see the proof join on bill", () => {
-    document.body.innerHTML = BillsUI({ data: bills });
-    const iconEye = screen.getAllByTestId("icon-eye");
+    const html = BillsUI({ data: bills });
+    document.body.innerHTML = html;
 
-    const seeProof = new Bill({ document, onNavigate, undefined, localStorage });
+    $.fn.modal = jest.fn();
 
-    const handleClickIconEye = jest.fn(seeProof.handleClickIconEye);
-    iconEye[1].addEventListener("click", () => handleClickIconEye(iconEye[1]));
-    userEvent.click(iconEye[1]);
+    const bill = new Bill({ document, onNavigate, undefined, localStorage });
+    const handleClickIconEye = jest.fn(bill.handleClickIconEye);
+
+    const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`);
+    iconEye.forEach((icon) => {
+      icon.addEventListener("click", () => handleClickIconEye(icon));
+      fireEvent.click(icon);
+    });
+
+    expect(handleClickIconEye).toHaveBeenCalled();
     expect(screen.getByText("Justificatif")).toBeTruthy();
   });
 
@@ -105,4 +102,5 @@ describe("Given I am connected as an employee", () => {
     const form = screen.getByTestId("form-employee");
     expect(form).toBeDefined();
   });
+  
 });

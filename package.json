@@ -1,11 +1,14 @@
 {
   "scripts": {
-    "test": "jest --coverage --noStackTrace --silent=false --verbose "
+    "test": "jest --coverage --noStackTrace --silent --verbose "
   },
   "jest": {
     "verbose": false,
     "setupFiles": [
       "./setup-jest.js"
+    ],
+    "testPathIgnorePatterns" : [
+      "<rootDir>/ignore/this/path/" 
     ],
     "collectCoverageFrom": [
       "**/*.{js,jsx}",

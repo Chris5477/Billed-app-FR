@@ -35,9 +35,6 @@ export default class Login {
   handleSubmitAdmin = e => {
     const user = {
       type: "Admin",
-
-      //MODIFICATION DANS QUERYSELECTOR EMPLOYEE REMPLACE PAR ADMIN
-
       email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
       password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value,
       status: "connected"
@@ -51,7 +48,7 @@ export default class Login {
     PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
     document.body.style.backgroundColor="#fff"
   }
-
+  /* istanbul ignore next */
   // not need to cover this function by tests
   checkIfUserExists = (user) => {
     if (this.firestore) {
@@ -71,7 +68,7 @@ export default class Login {
       return null
     }
   }
-
+  /* istanbul ignore next */
   // not need to cover this function by tests
   createUser = (user) => {
     if (this.firestore) {

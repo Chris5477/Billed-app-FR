@@ -19,15 +19,15 @@ export default class NewBill {
   handleChangeFile = e => {
     const span = document.querySelector(".error-msg")
     let file = document.querySelector(`input[data-testid="file"]`).files[0]
-    const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1 ]
+    const filePath = file.name.split(/\\/g)
+    const fileName = filePath[filePath.length-1]
     const extension = /(.png|.jpg|.jpeg)$/
     if(!fileName.match(extension)){
       document.querySelector(`input[data-testid="file"]`).value=""
       span.innerHTML ="Veuillez saisir un format avec une extension valide(jpg, jpeg ou png)"
       return 0
     }
-    
+   
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -60,7 +60,7 @@ export default class NewBill {
   }
 
  
-  
+  /* istanbul ignore next */
   // not need to cover this function by tests
   createBill = (bill) => {
     if (this.firestore) {
