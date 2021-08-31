@@ -3,10 +3,11 @@ import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import LoginUI from "../views/LoginUI.js";
 import Bill from "../containers/Bills.js";
-import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES } from "../constants/routes.js";
 import userEvent from "@testing-library/user-event";
 import Logout from "../containers/Logout.js";
 import Login from "../containers/Login.js";
+import firebase from "../__mocks__/firebase.js"
 
 describe("Given I am connected as an employee", () => {
   const onNavigate = (pathname) => (document.body.innerHTML = ROUTES({ pathname }));
@@ -31,6 +32,9 @@ describe("Given I am connected as an employee", () => {
       const btnSubmitEmployee = screen.getByTestId("employee-login-button");
       btnSubmitEmployee.addEventListener("click", (e) => handleSubmitEmployee);
       userEvent.click(btnSubmitEmployee);
+      if(document.body.innerHTML = BillsUI({data : [], loading : true})){
+        expect(screen.getAllByText("Loading...")).toBeTruthy()
+      }
       const checkClass = screen.getByTestId("icon-window").classList.contains("active-icon");
       expect(checkClass).toBeTruthy();
 
@@ -102,5 +106,36 @@ describe("Given I am connected as an employee", () => {
     const form = screen.getByTestId("form-employee");
     expect(form).toBeDefined();
   });
+
+  
   
 });
+
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate in Bills page", () => {
+    test("fetches bills from mock API GET", async () => {
+       const getSpy = jest.spyOn(firebase, "get")
+       const bills = await firebase.get()
+       expect(getSpy).toHaveBeenCalledTimes(1)
+       expect(bills.data.length).toBe(4)
+    })
+    test("fetches bills from an API and fails with 404 message error", async () => {
+      firebase.get.mockImplementationOnce(() =>
+        Promise.reject(new Error("Erreur 404"))
+      )
+      const html = BillsUI({ error: "Erreur 404" })
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    })
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      firebase.get.mockImplementationOnce(() =>
+        Promise.reject(new Error("Erreur 500"))
+      )
+      const html = BillsUI({ error: "Erreur 500" })
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    })
+  })
+})
