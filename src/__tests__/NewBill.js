@@ -6,8 +6,10 @@ import NewBill from "../containers/NewBill.js";
 import userEvent from "@testing-library/user-event";
 import { ROUTES } from "../constants/routes.js";
 import firestore from "../app/Firestore.js";
+import firebase from "../__mocks__/firebase.js"
 
 import "@testing-library/jest-dom";
+
 
 describe("Given I am a user connected as Employee and I am on NewBill Page ", () => {
   const user = {
@@ -149,3 +151,34 @@ describe("Given I am a user connected as Employee and I am on NewBill Page ", ()
   });
 });
 
+describe("When I navigate in Bills page", () => {
+  test("fetches bills from mock API Post", async () => {
+    
+
+      const newBill = {
+        "id": "qcCK3SzECmaZAGRrHjaC",
+        "status": "refused",
+        "pct": 20,
+        "amount": 200,
+        "email": "a@a",
+        "name": "test8",
+        "vat": "40",
+        "fileName": "preview-facture-free-201801-pdf-1.jpg",
+        "date": "2002-02-02",
+        "commentAdmin": "pas la bonne facture",
+        "commentary": "test8",
+        "type": "Restaurants et bars",
+        "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
+      }
+   
+            
+             const getSpy = jest.spyOn(firebase, "post") // post
+             const bills = await firebase.post(newBill) // post(bill?)
+             const addBill = [...bills.data, newBill]
+             expect(getSpy).toHaveBeenCalledTimes(1)
+             expect(addBill.length).toBe(5)
+             expect(addBill[4].name).toBe("test8")
+            
+          })
+  
+});
