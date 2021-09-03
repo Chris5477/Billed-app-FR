@@ -35,7 +35,7 @@ export const card = (bill) => {
 
   const regexDate = /^\d{4,4}\/\d{2,2}\/\d{2,2}/
   const transformFormatDate = () => bill.date.replace(/(\s|-|\.)/g, "/")
-  console.log(bill.date)
+  
   
   const result =  bill.date === regexDate ? formatDate(bill.date) : transformFormatDate()
 

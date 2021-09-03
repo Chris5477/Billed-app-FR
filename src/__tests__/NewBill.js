@@ -61,7 +61,7 @@ describe("Given I am a user connected as Employee and I am on NewBill Page ", ()
   });
 
   describe("I fill inputs with correct format except input file", () => {
-    test("then I should stay on NewBil Page and i'm invit to fill the inputs with wrong format", () => {
+    test("then I should stay on NewBil Page and i'm invit to fill the inputs with good format", () => {
       localStorage.setItem("user", JSON.stringify(user));
 
       const html = NewBillUI();
@@ -172,8 +172,8 @@ describe("When I navigate in Bills page", () => {
       }
    
             
-             const getSpy = jest.spyOn(firebase, "post") // post
-             const bills = await firebase.post(newBill) // post(bill?)
+             const getSpy = jest.spyOn(firebase, "post")
+             const bills = await firebase.post(newBill) 
              const addBill = [...bills.data, newBill]
              expect(getSpy).toHaveBeenCalledTimes(1)
              expect(addBill.length).toBe(5)
@@ -181,4 +181,4 @@ describe("When I navigate in Bills page", () => {
             
           })
   
-});
+}); 
